@@ -19,6 +19,7 @@ object Curve {
   trait EllipticCurve[P <: EllipticPoint] {
     val characteristic: Num
     val infinity: P
+    val initialPoint: P
 
     def neg(p: P): P
     def double(p: P): P

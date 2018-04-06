@@ -1,24 +1,17 @@
 package io.strangeattractor.ecm
 
-import io.strangeattractor.ecm.ECM._
+import io.strangeattractor.ecm.Curve._
 
 /**
   * Created by Peter on 7/4/2017.
   */
 object Method {
 
-  sealed trait FactorizationMethod
-  trait MontgomeryMethod extends FactorizationMethod
+  trait FactorizationMethod
 
   trait FactorizationResolver[M <: FactorizationMethod] {
     type Point <: EllipticPoint
     type Curve <: EllipticCurve[Point]
-    type Gen <: CurveGenerator[Point]
-  }
-
-  implicit val montgomery = new FactorizationResolver[MontgomeryMethod] {
-    type Point = MontgomeryPoint
-    type Curve = MontgomeryCurve
-    type Gen = MontgomeryGenerator
+    val generator: CurveGenerator[Point]
   }
 }

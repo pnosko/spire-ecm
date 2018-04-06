@@ -8,5 +8,8 @@ val catsVersion = "0.9.0"
 
 libraryDependencies ++= Seq(
   "org.typelevel" %% "cats" % catsVersion,
-  "org.typelevel" %% "spire" % "0.14.1"
+  "org.typelevel" %% "spire" % "0.14.1",
+  "org.scodec" %% "scodec-bits" % "1.1.5",
+
+  "org.scalatest" %% "scalatest" % "3.0.1" % "test"
 )
