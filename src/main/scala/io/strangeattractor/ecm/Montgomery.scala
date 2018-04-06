@@ -64,7 +64,11 @@ object Montgomery {
     }
 
     override def add(p1: MontgomeryPoint, p2: MontgomeryPoint): MontgomeryPoint = {
-      ???
+      val left = (p1.x - p1.z) * (p2.x + p2.z)
+      val right = (p1.x + p1.z) * (p2.x - p2.z)
+      val x = initialPoint.z * (left + right) ** 2 % characteristic
+      val z = initialPoint.x * (left - right) ** 2 % characteristic
+      MontgomeryPoint(x, z)
     }
 
     override def mul(p: MontgomeryPoint, multiple: Num): MontgomeryPoint = multiple match {
