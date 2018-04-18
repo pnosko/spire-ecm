@@ -11,13 +11,13 @@ object Curve {
   trait EllipticPoint
   case class AffinePoint(x: Num, y: Num, z: Num) extends EllipticPoint
 
+  case class Factor(n: Num)
+
   object EllipticPoint {
     val affineInfinity: AffinePoint = AffinePoint(SafeLong.zero, SafeLong.zero, SafeLong.zero)
-
   }
 
-  trait EllipticCurve[P <: EllipticPoint] {
-    val characteristic: Num
+  trait EllipticArithmetic[P <: EllipticPoint] {
     val infinity: P
     val initialPoint: P
 
@@ -25,5 +25,9 @@ object Curve {
     def double(p: P): P
     def add(p1: P, p2: P): P
     def mul(p: P, mul: Num): P
+  }
+
+  trait EllipticCurve[P <: EllipticPoint] {
+    val characteristic: Num
   }
 }

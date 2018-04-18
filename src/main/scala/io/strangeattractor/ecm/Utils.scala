@@ -1,16 +1,12 @@
 package io.strangeattractor.ecm
 
-import spire.math.{SafeLong, SafeLongBigInteger, SafeLongLong}
 import scodec.bits._
+import spire.math.SafeLong
 
 object Utils {
   implicit class SafeLongOps(num: SafeLong) {
     def toBitVector: BitVector = {
-      BitVector(1L)
-      //      }num match {
-      //      case SafeLongLong(n) => BitVector(n)
-      //      case SafeLongBigInteger(n) => BitVector(n.toByteArray)
-      //    }
+      BitVector(num.toBigInt.toByteArray)
     }
   }
 }
