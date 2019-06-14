@@ -25,18 +25,6 @@ class MontgomeryTest extends FlatSpec with Matchers {
     res.left.toOption.get.n should be (2L)
   }
 
-  "EllipticMultiply" should "return the same multiple as when adding/doubling for n = 3" in {
-    val number = SafeLong(93L)
-    val arithmetic = getArithmetic(number)
-    val p = arithmetic.initialPoint
-
-    val mul1 = arithmetic.mul(p, 3L)
-    val d = p // curve.double(p)
-    val dd = arithmetic.double(d)
-    val mul2 = arithmetic.add(dd, p)
-    mul1 should be (mul2)
-  }
-
   private def getArithmetic(number: SafeLong): MontgomeryArithmetic = {
     val res = new MontgomeryGenerator(generator).generate(number)
 
@@ -45,8 +33,19 @@ class MontgomeryTest extends FlatSpec with Matchers {
     arithmetic
   }
 
+  "EllipticMultiply" should "return the same multiple as when adding/doubling for n = 3" in {
+    val number = SafeLong(93L)
+    val arithmetic = getArithmetic(number)
+    val p = arithmetic.initialPoint
+
+    val mul1 = arithmetic.mul(p, 3L)
+    val d = p
+    val dd = arithmetic.double(d)
+    val mul2 = arithmetic.add(dd, p, p)
+    mul1 should be (mul2)
+  }
+
   "EllipticMultiply" should "return the same multiple as when adding/doubling for n = 5" in {
-    val gen = new MontgomeryGenerator(generator)
     val number = SafeLong(93L)
     val arithmetic = getArithmetic(number)
     val p = arithmetic.initialPoint
@@ -54,7 +53,45 @@ class MontgomeryTest extends FlatSpec with Matchers {
     val mul1 = arithmetic.mul(p, 5L)
     val d = arithmetic.double(p)
     val dd = arithmetic.double(d)
-    val mul2 = arithmetic.add(dd, p)
+    val mul2 = arithmetic.add(dd, p, p)
+    mul1 should be (mul2)
+  }
+
+  "EllipticMultiply" should "return the same multiple as when adding/doubling for n = 4" in {
+    val number = SafeLong(93L)
+    val arithmetic = getArithmetic(number)
+    val p = arithmetic.initialPoint
+
+    val mul1 = arithmetic.mul(p, 4L)
+    val d = arithmetic.double(p)
+    val dd = arithmetic.double(d)
+    val mul2 = dd
+    mul1 should be (mul2)
+  }
+
+  "EllipticMultiply" should "return the same multiple as when adding/doubling for n = 7" in {
+    val number = SafeLong(1L)
+    val arithmetic = getArithmetic(number)
+    val p = arithmetic.initialPoint
+
+    val mul1 = arithmetic.mul(p, 7L)
+    val p2 = arithmetic.double(p)
+    val p4 = arithmetic.double(p2)
+    val p3 = arithmetic.add(p2, p, p)
+    val mul2 = arithmetic.add(p4, p3, p)
+    mul1 should be (mul2)
+  }
+
+  "EllipticMultiply" should "return the same multiple as when adding/doubling for n = 9" in {
+    val number = SafeLong(93L)
+    val arithmetic = getArithmetic(number)
+    val p = arithmetic.initialPoint
+
+    val mul1 = arithmetic.mul(p, 9L)
+    val p2 = arithmetic.double(p)
+    val p4 = arithmetic.double(p2)
+    val p8 = arithmetic.double(p4)
+    val mul2 = arithmetic.add(p8, p, p)
     mul1 should be (mul2)
   }
 }

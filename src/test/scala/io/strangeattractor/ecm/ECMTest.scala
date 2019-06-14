@@ -13,4 +13,5 @@ class ECMTest extends FlatSpec with Matchers {
 
     res should be (FactorizationResult(SafeLong.two, SafeLong(59)))
   }
+
 }

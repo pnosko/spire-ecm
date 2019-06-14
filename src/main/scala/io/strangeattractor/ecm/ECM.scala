@@ -20,13 +20,9 @@ object ECM {
   def factor(n: Num)(implicit g: Generator): FactorizationResult = {
     val gen = new MontgomeryGenerator(g)
 
-    def degenerateCase(foundFactor: Factor) = {
-      FactorizationResult(foundFactor.n, n / foundFactor.n)
-    }
-
-    gen.generate(n).fold(degenerateCase, {case (c, p) => factorMontgomery(n, c, p)})
+    gen.generate(n).fold(
+      foundFactor => FactorizationResult(foundFactor.n, n / foundFactor.n),
+      {case (c, p) => factorMontgomery(n, c, p)}
+    )
   }
 }
-
-
-
