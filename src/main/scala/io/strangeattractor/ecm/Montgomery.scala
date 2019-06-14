@@ -15,6 +15,8 @@ import scala.util.Try
 object Montgomery {
   import Utils._
 
+  case class Factor(n: Num)
+
   /*
   * Point on the elliptic curve, with Y-coordinate omitted
   */
@@ -25,49 +27,48 @@ object Montgomery {
   */
   case class MontgomeryCurve(a: Num, characteristic: Num) extends EllipticCurve[MontgomeryPoint]
 
-  class MontgomeryGenerator(rng: Generator = spire.random.GlobalRng) {
+  def generate(n: Num, rng: Generator = spire.random.GlobalRng): CurveResult =
+    genCurve(n, getSigma(n)(rng))
 
-    def generate(n: Num): Either[Factor, (MontgomeryCurve, MontgomeryPoint)] = genCurve(n, getSigma(n))
+  private def getSigma(n: Num)(rng: Generator) = {
+    val byteLength = max(1, n.bitLength / 8)
+    val dist = Dist.bigint(byteLength)
 
-    private def getSigma(n: Num) = {
-      val byteLength = max(1, n.bitLength / 8)
-      val dist = Dist.bigint(byteLength)
+    val start = SafeLong(7)
+    val random = rng.next[BigInt](dist).toSafeLong % (n - start)
+    val sigma = start + random
+    sigma
+  }
 
-      val start = SafeLong(7)
-      val random = rng.next[BigInt](dist).toSafeLong % (n - start)
-      val sigma = start + random
-      sigma
+  type CurveResult = Either[Factor, (MontgomeryCurve, MontgomeryPoint)]
+  private def genCurve(n: Num, sigma: Num): CurveResult = {
+    def modInv(number: Num): Option[Num] = Try(SafeLong(number.toBigInt.modInverse(n.toBigInt))).toOption
+
+    val four = SafeLong(4)
+
+    val u = sigma * sigma - SafeLong(5)
+    val v = four * sigma
+
+    val x = u * u * u % n
+    val z = v * v * v % n
+
+    val candidate = four * x * v % n
+
+    def degenerate(candidate: Num): CurveResult = {
+      val gcd = candidate.gcd(n)
+      if (gcd === n) generate(n)
+      else Left(Factor(gcd))
     }
 
-    private def genCurve(n: Num, sigma: Num): Either[Factor, (MontgomeryCurve, MontgomeryPoint)] = {
-      def modInv(number: Num): Option[Num] = Try(SafeLong(number.toBigInt.modInverse(n.toBigInt))).toOption
-
-      val four = SafeLong(4)
-
-      val u = sigma * sigma - SafeLong(5)
-      val v = four * sigma
-
-      val x = u * u * u % n
-      val z = v * v * v % n
-
-      val candidate = four * x * v % n
-
-      def degenerate(candidate: Num) = {
-        val gcd = candidate.gcd(n)
-        if (gcd === n) generate(n)
-        else Left(Factor(gcd))
-      }
-
-      def nonDegenerate(t1: Num) = {
-        val t2 = (v - u + n) % n
-        val a = (t2 * t2 * t2 * (SafeLong.three * u + v) * t1 - SafeLong.two) % n
-        Right(MontgomeryCurve(a, n), MontgomeryPoint(x % n, z % n))
-      }
-
-      val inverse = modInv(candidate)
-
-      inverse.fold(degenerate(candidate))(nonDegenerate)
+    def nonDegenerate(t1: Num) = {
+      val t2 = (v - u + n) % n
+      val a = (t2 * t2 * t2 * (SafeLong.three * u + v) * t1 - SafeLong.two) % n
+      Right(MontgomeryCurve(a, n), MontgomeryPoint(x % n, z % n))
     }
+
+    val inverse = modInv(candidate)
+
+    inverse.fold(degenerate(candidate))(nonDegenerate)
   }
 
   class MontgomeryArithmetic(curve: MontgomeryCurve, val initialPoint: MontgomeryPoint) {

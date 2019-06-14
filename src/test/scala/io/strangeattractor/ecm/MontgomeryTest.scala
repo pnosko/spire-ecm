@@ -10,23 +10,21 @@ class MontgomeryTest extends FlatSpec with Matchers {
   private def generator: Generator = spire.random.rng.Serial.fromSeed(1L)
 
   "GenerateCurve" should "generate a curve when factorizing 13" in {
-    val gen = new MontgomeryGenerator(generator)
     val number = SafeLong(13L)
-    val res = gen.generate(number)
+    val res = Montgomery.generate(number, generator)
 
     res.toOption.get._1.characteristic should be (number)
   }
 
   "GenerateCurve" should "return a factor when factorizing 118" in {
-    val gen = new MontgomeryGenerator(generator)
     val number = SafeLong(118L)
-    val res = gen.generate(number)
+    val res = Montgomery.generate(number, generator)
 
     res.left.toOption.get.n should be (2L)
   }
 
   private def getArithmetic(number: SafeLong): MontgomeryArithmetic = {
-    val res = new MontgomeryGenerator(generator).generate(number)
+    val res = Montgomery.generate(number, generator)
 
     val (curve, p) = res.toOption.get
     val arithmetic = new MontgomeryArithmetic(curve, p)

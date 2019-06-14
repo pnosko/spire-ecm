@@ -11,7 +11,6 @@ object Curve {
   trait EllipticPoint
   case class AffinePoint(x: Num, y: Num, z: Num) extends EllipticPoint
 
-  case class Factor(n: Num)
 
   object EllipticPoint {
     val affineInfinity: AffinePoint = AffinePoint(SafeLong.zero, SafeLong.zero, SafeLong.zero)

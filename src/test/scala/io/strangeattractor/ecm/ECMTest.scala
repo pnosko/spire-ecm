@@ -9,7 +9,7 @@ class ECMTest extends FlatSpec with Matchers {
   "Factor" should "return factors from curve generation" in {
     implicit val g: Generator = spire.random.rng.Serial.fromSeed(1L)
     val number = SafeLong(118L)
-    val res = ECM.factor(number)
+    val res = ECM.factorECM(number)
 
     res should be (FactorizationResult(SafeLong.two, SafeLong(59)))
   }
