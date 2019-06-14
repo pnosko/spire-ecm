@@ -1,13 +1,9 @@
 package io.strangeattractor.ecm
 
 import io.strangeattractor.ecm.Alias.Num
-import io.strangeattractor.ecm.Curve._
-import cats.data._
-import spire.algebra.Group
-import spire.math.{SafeLong, _}
+import spire.math._
 import spire.random._
 
-import scala.collection.immutable.NumericRange
 import scala.util.Try
 
 /**
@@ -20,17 +16,17 @@ object Montgomery {
   /*
   * Point on the elliptic curve, with Y-coordinate omitted
   */
-  case class MontgomeryPoint(x: Num, z: Num) extends EllipticPoint
+  case class MontgomeryPoint(x: Num, z: Num)
 
   /*
   * Curve y ^ 2 = x ^ 3 + A * x ^ 2 + x
   */
-  case class MontgomeryCurve(a: Num, characteristic: Num) extends EllipticCurve[MontgomeryPoint]
+  case class MontgomeryCurve(a: Num, characteristic: Num)
 
   def generate(n: Num, rng: Generator = spire.random.GlobalRng): CurveResult =
-    genCurve(n, getSigma(n)(rng))
+    genCurve(n, getSigma(n, rng))
 
-  private def getSigma(n: Num)(rng: Generator) = {
+  private def getSigma(n: Num, rng: Generator) = {
     val byteLength = max(1, n.bitLength / 8)
     val dist = Dist.bigint(byteLength)
 
@@ -60,7 +56,7 @@ object Montgomery {
       else Left(Factor(gcd))
     }
 
-    def nonDegenerate(t1: Num) = {
+    def nonDegenerate(t1: Num): CurveResult = {
       val t2 = (v - u + n) % n
       val a = (t2 * t2 * t2 * (SafeLong.three * u + v) * t1 - SafeLong.two) % n
       Right(MontgomeryCurve(a, n), MontgomeryPoint(x % n, z % n))
