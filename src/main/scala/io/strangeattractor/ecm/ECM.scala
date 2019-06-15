@@ -37,10 +37,8 @@ object ECM {
     }
   }
 
-  def factor(n: Num): FactorizationResult = {
-    Montgomery.generate(n).fold(
-      foundFactor => FactorizationResult.fromSingleFactor(n, foundFactor.n),
-      {case (c, p) => factorECM(n, c, p)}
-    )
-  }
+  def factor(n: Num): FactorizationResult = Montgomery.generate(n).fold(
+    foundFactor => FactorizationResult.fromSingleFactor(n, foundFactor.n),
+    {case (c, p) => factorECM(n, c, p)}
+  )
 }
