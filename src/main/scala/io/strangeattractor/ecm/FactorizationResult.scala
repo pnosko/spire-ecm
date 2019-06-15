@@ -1,7 +1,6 @@
 package io.strangeattractor.ecm
 
 import io.strangeattractor.ecm.Alias.Num
-import io.strangeattractor.ecm.ECM.Factors
 import spire.math.SafeLong
 import spire.math.SafeLong.one
 

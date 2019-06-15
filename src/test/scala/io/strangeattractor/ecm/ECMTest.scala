@@ -1,6 +1,5 @@
 package io.strangeattractor.ecm
 
-import io.strangeattractor.ecm.ECM.FactorizationResult
 import org.scalatest.{FlatSpec, Matchers}
 import spire.math.SafeLong
 import spire.random.Generator
@@ -21,7 +20,13 @@ class ECMTest extends FlatSpec with Matchers {
     val number = SafeLong(65)
     val res = ECM.factor(number)
 
-    res should be (FactorizationResult.fromSingleFactor(number, SafeLong(5)))
+    res should be (FactorizationResult.fromSingleFactor(number, 5L))
+  }
+
+  "Factor" should "should construct result correctly" in {
+    val number = SafeLong(65)
+    val factor = FactorizationResult.fromSingleFactor(number, 13L)
+    factor should be (FactorizationResult(Factors(Map(SafeLong(13L) -> 1)), 5L))
   }
 
 }
