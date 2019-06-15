@@ -8,46 +8,13 @@ import spire.math._
 object ECM {
   import SafeLong._
 
-  case class FactorizationResult(factors: Factors, rest: Num)
-
-  object FactorizationResult {
-    def wrap(n: Num): FactorizationResult = FactorizationResult(Factors(n), one)
-    def fromSingleFactor(n: Num, factor: Num): FactorizationResult = {
-      val fs = factors(n, factor)
-      val rest = n / fs.folded
-      FactorizationResult(fs, rest)
-    }
-  }
-
-  def factors(n: Num, g: Num): Factors = {
-    val exp = timesDivisible(n, g)
-    Factors(Map(g -> exp))
-  }
-
-  case class Factors(factors: Map[Num, Int]) {
-    def folded: Num = factors.foldLeft(one){ case (acc, (b, e)) => acc * b ^ e}
-  }
-
-  object Factors {
-    def apply(f: Num): Factors = Factors(Map(f -> 1))
-  }
-
   def factorECM(n: Num, curve: MontgomeryCurve, point: MontgomeryPoint): FactorizationResult = {
-    val b1 = 100000
+    val b1 = 1000
 
     factorizeMontgomery(n , b1, curve, point)
   }
 
-  def timesDivisible(n: Num, g: Num): Int = {
-    import SafeLong._
-    var exp = 0
-    var acc = g
-    while (n % acc === zero) {
-      acc *= g
-      exp += 1
-    }
-    exp
-  }
+
 
   private def factorizeMontgomery(n: Num, b1: Int, curve: MontgomeryCurve, point: MontgomeryPoint): FactorizationResult = {
     val arithmetic = Montgomery.arithmetic(curve, point)
@@ -78,8 +45,7 @@ object ECM {
   def factor(n: Num): FactorizationResult = {
     Montgomery.generate(n).fold(
       foundFactor => {
-        val fs = factors(n, foundFactor.n)
-        FactorizationResult(fs, n / fs.folded)
+        FactorizationResult.fromSingleFactor(n, foundFactor.n)
       },
       {case (c, p) => factorECM(n, c, p)}
     )
