@@ -10,23 +10,24 @@ import scala.util.Try
   */
 object Montgomery {
   import Utils._
+  import SafeLong._
 
   case class Factor(n: Num)
 
   /*
-  * Point on the elliptic curve, with Y-coordinate omitted
+  * Projective point on the elliptic curve, with Y-coordinate omitted (x = X / (Z ^ 2), y = X / (Z ^ 3))
   */
   case class MontgomeryPoint(x: Num, z: Num)
 
   /*
-  * Curve y ^ 2 = x ^ 3 + A * x ^ 2 + x
+  * Curve B * y ^ 2 = x ^ 3 + A * x ^ 2 + x
   */
-  case class MontgomeryCurve(a: Num, characteristic: Num)
+  case class MontgomeryCurve(a: Num, b: Num, characteristic: Num)
 
   def generate(n: Num, rng: Generator = spire.random.GlobalRng): CurveResult =
     genCurve(n, getSigma(n, rng))
 
-  private def getSigma(n: Num, rng: Generator) = {
+  private def getSigma(n: Num, rng: Generator): Num = {
     val byteLength = max(1, n.bitLength / 8)
     val dist = Dist.bigint(byteLength)
 
@@ -58,8 +59,8 @@ object Montgomery {
 
     def nonDegenerate(t1: Num): CurveResult = {
       val t2 = (v - u + n) % n
-      val a = (t2 * t2 * t2 * (SafeLong.three * u + v) * t1 - SafeLong.two) % n
-      Right(MontgomeryCurve(a, n), MontgomeryPoint(x % n, z % n))
+      val a = (t2 * t2 * t2 * (three * u + v) * t1 - two) % n
+      Right(MontgomeryCurve(a, one, n), MontgomeryPoint(x % n, z % n))
     }
 
     val inverse = modInv(candidate)
@@ -85,25 +86,26 @@ object Montgomery {
       MontgomeryPoint(x, y)
     }
 
-    def add(p1: MontgomeryPoint, p2: MontgomeryPoint, p3: MontgomeryPoint): MontgomeryPoint = {
+    def add(p1: MontgomeryPoint, p2: MontgomeryPoint)(origin: MontgomeryPoint): MontgomeryPoint = {
       val d1 = (p1.x * p2.x - p1.z * p2.z) % n
       val d2 = (p1.x * p2.z - p1.z * p2.x) % n
-      val x = (p3.z * d1 * d1) % n
-      val z = (p3.x * d2 * d2) % n
+      val x = (origin.z * d1 * d1) % n
+      val z = (origin.x * d2 * d2) % n
       MontgomeryPoint(x, z)
     }
 
-    private def multiplicationLadder(p: MontgomeryPoint, multiple: Num) = {
+    private def multiplicationLadder(p: MontgomeryPoint, multiple: Num): MontgomeryPoint = {
       var u: MontgomeryPoint = p
       var t: MontgomeryPoint = double(p)
 
       val bv = multiple.toBitVector
-      for (i <- (bv.length - 2) to 0 by -1) {
+      val range = 1 until bv.length
+      for (i <- range) {
         if (bv(i)) {
-          u = add(t, u, p)
+          u = add(t, u)(p)
           t = double(t)
         } else {
-          t = add(u, t, p)
+          t = add(u, t)(p)
           u = double(u)
         }
       }

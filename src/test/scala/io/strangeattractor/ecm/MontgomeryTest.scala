@@ -1,5 +1,6 @@
 package io.strangeattractor.ecm
 
+import io.strangeattractor.ecm.Utils._
 import org.scalatest.{FlatSpec, Matchers}
 import spire.math.SafeLong
 import spire.random.Generator
@@ -8,6 +9,14 @@ class MontgomeryTest extends FlatSpec with Matchers {
   import Montgomery._
 
   private def generator: Generator = spire.random.rng.Serial.fromSeed(1L)
+
+  "toBitVector" should "convert to binary correctly" in {
+    val number = 7L
+
+    val binary = SafeLong(number).toBitVector
+    val binaryString = number.toBinaryString
+    binary.map(if(_) "1" else "0").mkString shouldEqual binaryString
+  }
 
   "GenerateCurve" should "generate a curve when factorizing 13" in {
     val number = SafeLong(13L)
@@ -39,7 +48,7 @@ class MontgomeryTest extends FlatSpec with Matchers {
     val mul1 = arithmetic.mul(p, 3L)
     val d = p
     val dd = arithmetic.double(d)
-    val mul2 = arithmetic.add(dd, p, p)
+    val mul2 = arithmetic.add(dd, p)(p)
     mul1 should be (mul2)
   }
 
@@ -51,7 +60,7 @@ class MontgomeryTest extends FlatSpec with Matchers {
     val mul1 = arithmetic.mul(p, 5L)
     val d = arithmetic.double(p)
     val dd = arithmetic.double(d)
-    val mul2 = arithmetic.add(dd, p, p)
+    val mul2 = arithmetic.add(dd, p)(p)
     mul1 should be (mul2)
   }
 
@@ -75,8 +84,8 @@ class MontgomeryTest extends FlatSpec with Matchers {
     val mul1 = arithmetic.mul(p, 7L)
     val p2 = arithmetic.double(p)
     val p4 = arithmetic.double(p2)
-    val p3 = arithmetic.add(p2, p, p)
-    val mul2 = arithmetic.add(p4, p3, p)
+    val p3 = arithmetic.add(p2, p)(p)
+    val mul2 = arithmetic.add(p4, p3)(p)
     mul1 should be (mul2)
   }
 
@@ -89,7 +98,7 @@ class MontgomeryTest extends FlatSpec with Matchers {
     val p2 = arithmetic.double(p)
     val p4 = arithmetic.double(p2)
     val p8 = arithmetic.double(p4)
-    val mul2 = arithmetic.add(p8, p, p)
+    val mul2 = arithmetic.add(p8, p)(p)
     mul1 should be (mul2)
   }
 }
