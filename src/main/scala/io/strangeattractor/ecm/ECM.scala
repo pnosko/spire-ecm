@@ -9,6 +9,9 @@ object ECM {
   case class FactorizationResult(factor: Num, rest: Num)
 
   def factorMontgomery(n: Num, curve: MontgomeryCurve, point: MontgomeryPoint): FactorizationResult = {
+    val arithmetic = Montgomery.arithmetic(curve, point)
+
+
     FactorizationResult(n, SafeLong.one)
   }
 

@@ -12,6 +12,9 @@ object Montgomery {
   import Utils._
   import SafeLong._
 
+  def arithmetic(curve: MontgomeryCurve, initialPoint: MontgomeryPoint): MontgomeryArithmetic =
+    new MontgomeryArithmetic(curve, initialPoint)
+
   case class Factor(n: Num)
 
   /*
