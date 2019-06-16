@@ -63,7 +63,7 @@ object Montgomery {
     def nonDegenerate(t1: Num): CurveResult = {
       val t2 = (v - u + n) % n
       val a = (t2 * t2 * t2 * (three * u + v) * t1 - two) % n
-      Right(MontgomeryCurve(a, one, n), MontgomeryPoint(x % n, z % n))
+      Right((MontgomeryCurve(a, one, n), MontgomeryPoint(x % n, z % n)))
     }
 
     val inverse = modInv(candidate)
@@ -73,6 +73,7 @@ object Montgomery {
 
   class MontgomeryArithmetic(curve: MontgomeryCurve, val initialPoint: MontgomeryPoint) {
     import Utils._
+    private val four = SafeLong(4L)
 
     val infinity: MontgomeryPoint = MontgomeryPoint(SafeLong.zero, SafeLong.zero)
     private val n = curve.characteristic
@@ -85,7 +86,7 @@ object Montgomery {
       val xz = p.x * p.z
       val diff = (xx - zz + n) % n
       val x =  (diff * diff) % n
-      val y =  (SafeLong(4L) * xz * (xx + curve.a * xz + zz)) % n
+      val y =  (four * xz * (xx + curve.a * xz + zz)) % n
       MontgomeryPoint(x, y)
     }
 
