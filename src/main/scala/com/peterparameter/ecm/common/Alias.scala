@@ -1,4 +1,4 @@
-package com.peterparameter.ecm
+package com.peterparameter.ecm.common
 
 import spire.math.SafeLong
 
