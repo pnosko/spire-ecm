@@ -1,4 +1,4 @@
-package io.strangeattractor.ecm
+package com.peterparameter.ecm
 
 import spire.math.SafeLong
 

@@ -1,4 +1,4 @@
-package io.strangeattractor.ecm
+package com.peterparameter.ecm
 
 import org.scalatest.{FlatSpec, Matchers}
 import spire.math.SafeLong

@@ -1,8 +1,8 @@
-package io.strangeattractor.ecm
+package com.peterparameter.ecm
 
-import io.strangeattractor.ecm.Alias.Num
-import io.strangeattractor.ecm.Montgomery._
-import io.strangeattractor.ecm.Utils._
+import Alias.Num
+import Montgomery._
+import Utils._
 import spire.math._
 
 

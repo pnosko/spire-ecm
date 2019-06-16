@@ -1,13 +1,14 @@
-package io.strangeattractor.ecm
+package com.peterparameter.ecm
 
-import io.strangeattractor.ecm.Alias.Num
+import Alias.Num
+import com.peterparameter.ecm
 import spire.math.SafeLong
 import spire.math.SafeLong.one
 
 case class FactorizationResult(factors: Factors, rest: Num)
 
 object FactorizationResult {
-  def wrap(n: Num): FactorizationResult = FactorizationResult(Factors(n), one)
+  def wrap(n: Num): FactorizationResult = FactorizationResult(ecm.Factors(n), one)
   def fromSingleFactor(n: Num, factor: Num): FactorizationResult = {
     val fs = factors(n, factor)
     val rest = n / fs.folded
@@ -27,6 +28,6 @@ object FactorizationResult {
     }
 
     val exp = timesDivisible(n, g)
-    Factors(Map(g -> exp))
+    ecm.Factors(Map(g -> exp))
   }
 }
