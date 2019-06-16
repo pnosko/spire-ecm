@@ -1,6 +1,6 @@
-package io.strangeattractor.ecm
+package com.peterparameter.ecm
 
-import io.strangeattractor.ecm.Alias.Num
+import Alias.Num
 import spire.math._
 import spire.random._
 

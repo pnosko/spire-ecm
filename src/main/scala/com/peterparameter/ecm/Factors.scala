@@ -1,6 +1,6 @@
-package io.strangeattractor.ecm
+package com.peterparameter.ecm
 
-import io.strangeattractor.ecm.Alias.Num
+import Alias.Num
 import spire.math.SafeLong.one
 
 case class Factors(factors: Map[Num, Int]) {

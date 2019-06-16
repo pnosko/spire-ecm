@@ -1,6 +1,6 @@
-package io.strangeattractor.ecm
+package com.peterparameter.ecm
 
-import io.strangeattractor.ecm.Utils._
+import Utils._
 import org.scalatest.{FlatSpec, Matchers}
 import spire.math.SafeLong
 import spire.random.Generator
