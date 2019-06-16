@@ -6,12 +6,14 @@ import spire.math.SafeLong
 import spire.std.bigDecimal._
 import spire.syntax.nroot._
 import spire.syntax.trig._
+
 import scala.annotation.tailrec
 import scala.collection.SeqView
+import scala.collection.immutable.LazyList
 
 object Utils {
   implicit class SafeLongOps(num: SafeLong) {
-    def toBitVector: SeqView[Boolean, IndexedSeq[Boolean]] = {
+    def toBitVector: SeqView[Boolean] = {
       val seq = BitVector.view(num.toBigInt.toByteArray).toIndexedSeq
       val idx = seq.indexOf(true)
       if (idx > 0)
@@ -24,9 +26,9 @@ object Utils {
     def toSafeLong: SafeLong = SafeLong(num)
   }
 
-  val primes: Stream[Int] = {
+  val primes: LazyList[Int] = {
     @tailrec
-    def next(n: Int, stream: Stream[Int]): Stream[Int] =
+    def next(n: Int, stream: LazyList[Int]): LazyList[Int] =
       if (stream.isEmpty || (stream.head ^ 2) > n)
         n #:: loop(n + 2, primes)
       else if (n % stream.head == 0)
@@ -34,7 +36,7 @@ object Utils {
       else
         next(n, stream.tail)
 
-    def loop(n: Int, stream: Stream[Int]): Stream[Int] = next(n, stream)
+    def loop(n: Int, stream: LazyList[Int]): LazyList[Int] = next(n, stream)
 
     2 #:: loop(3, primes)
   }
