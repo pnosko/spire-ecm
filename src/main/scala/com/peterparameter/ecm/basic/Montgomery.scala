@@ -1,6 +1,7 @@
-package com.peterparameter.ecm
+package com.peterparameter.ecm.basic
 
-import Alias.Num
+import com.peterparameter.ecm.common.Alias.Num
+import com.peterparameter.ecm.common.Utils
 import spire.math._
 import spire.random._
 
@@ -9,8 +10,8 @@ import scala.util.Try
 /**
   */
 object Montgomery {
-  import Utils._
   import SafeLong._
+  import Utils._
 
   def arithmetic(curve: MontgomeryCurve, initialPoint: MontgomeryPoint): MontgomeryArithmetic =
     new MontgomeryArithmetic(curve, initialPoint)

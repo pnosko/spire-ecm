@@ -1,12 +1,13 @@
 package com.peterparameter.ecm
 
-import Utils._
+import com.peterparameter.ecm.common.Utils._
+import com.peterparameter.ecm.basic.Montgomery
 import org.scalatest.{FlatSpec, Matchers}
 import spire.math.SafeLong
 import spire.random.Generator
 
 class MontgomeryTest extends FlatSpec with Matchers {
-  import Montgomery._
+  import com.peterparameter.ecm.basic.Montgomery._
 
   private def generator: Generator = spire.random.rng.Serial.fromSeed(1L)
 

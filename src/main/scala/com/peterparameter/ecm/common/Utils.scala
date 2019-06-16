@@ -1,6 +1,6 @@
-package com.peterparameter.ecm
+package com.peterparameter.ecm.common
 
-import Alias.Num
+import com.peterparameter.ecm.common.Alias.Num
 import scodec.bits._
 import spire.math.SafeLong
 import spire.std.bigDecimal._

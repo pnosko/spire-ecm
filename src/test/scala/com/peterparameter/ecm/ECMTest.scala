@@ -1,5 +1,7 @@
 package com.peterparameter.ecm
 
+import com.peterparameter.ecm.basic.ECM
+import com.peterparameter.ecm.common.{FactorizationResult, Factors}
 import org.scalatest.{FlatSpec, Matchers}
 import spire.math.SafeLong
 import spire.random.Generator

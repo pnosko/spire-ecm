@@ -1,8 +1,9 @@
-package com.peterparameter.ecm
+package com.peterparameter.ecm.basic
 
-import Alias.Num
-import Montgomery._
-import Utils._
+import com.peterparameter.ecm.common.Alias.Num
+import com.peterparameter.ecm.common.Utils.{b1Bound, primes}
+import com.peterparameter.ecm.basic.Montgomery._
+import com.peterparameter.ecm.common.FactorizationResult
 import spire.math._
 
 
