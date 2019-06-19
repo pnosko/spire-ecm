@@ -1,7 +1,8 @@
 package com.peterparameter.ecm.basic
 
 import com.peterparameter.ecm.common.Alias.Num
-import com.peterparameter.ecm.common.Utils
+import com.peterparameter.ecm.common.CurveUtils._
+import com.peterparameter.ecm.common._
 import spire.math._
 import spire.random._
 
@@ -11,12 +12,10 @@ import scala.util.Try
   */
 object Montgomery {
   import SafeLong._
-  import Utils._
 
   def arithmetic(curve: MontgomeryCurve, initialPoint: MontgomeryPoint): MontgomeryArithmetic =
     new MontgomeryArithmetic(curve, initialPoint)
 
-  case class Factor(n: Num)
 
   /*
   * Projective point on the elliptic curve, with Y-coordinate omitted (x = X / (Z ^ 2), y = X / (Z ^ 3))
@@ -31,23 +30,12 @@ object Montgomery {
   def generate(n: Num, rng: Generator = spire.random.GlobalRng): CurveResult =
     genCurve(n, getSigma(n, rng))
 
-  private def getSigma(n: Num, rng: Generator): Num = {
-    val byteLength = max(1, n.bitLength / 8)
-    val dist = Dist.bigint(byteLength)
-
-    val start = SafeLong(7)
-    val random = rng.next[BigInt](dist).toSafeLong % (n - start)
-    val sigma = start + random
-    sigma
-  }
-
   type CurveResult = Either[Factor, (MontgomeryCurve, MontgomeryPoint)]
   private def genCurve(n: Num, sigma: Num): CurveResult = {
     def modInv(number: Num): Option[Num] = Try(SafeLong(number.toBigInt.modInverse(n.toBigInt))).toOption
 
-    val four = SafeLong(4)
 
-    val u = sigma * sigma - SafeLong(5)
+    val u = sigma * sigma - five
     val v = four * sigma
 
     val x = u * u * u % n
