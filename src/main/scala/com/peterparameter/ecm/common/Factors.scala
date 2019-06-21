@@ -6,7 +6,7 @@ import spire.math.SafeLong.one
 case class Factor(n: Num)
 
 case class Factors(factors: Map[Num, Int]) {
-  def folded: Num = factors.foldLeft(one){ case (acc, (b, e)) => acc * b ^ e}
+  def folded: Num = factors.foldLeft(one){ case (acc, (b, e)) => acc * b ^ e }
 }
 
 object Factors {
